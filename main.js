@@ -264,7 +264,7 @@ Apify.main(async () => {
             const processZpid = async (zpid, index) => {
                 try{
                     const homeData = await page.evaluate(queryZpid, zpid, queryId);
-                    if(minTime && homeData.data.property.datePosted <= minTime){return;}
+                    if((minTime && homeData.data.property.datePosted <= minTime) || (input.type === 'sold' && homeData.data.property.lastSoldPrice !== 'RECENTLY_SOLD')){return;}
                     const result = getSimpleResult(homeData.data.property);
                     if(extendOutputFunction){
                         try{Object.assign(result, await extendOutputFunction(homeData.data));}
