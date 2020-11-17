@@ -33,7 +33,7 @@
             "title": "Start URLs",
             "type": "array",
             "editor": "requestListSources",
-			"prefill": "https://www.zillow.com/brooklyn-new-york-ny/sold/",
+			"prefill": ["https://www.zillow.com/brooklyn-new-york-ny/sold/"],
             "description": "List of URLs that will be crawled."
         },
         "zpids": {
