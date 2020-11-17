@@ -264,24 +264,27 @@ Apify.main(async () => {
             const processZpid = async (zpid, index) => {
                 try{
                     const homeData = await page.evaluate(queryZpid, zpid, queryId);
-                    if((minTime && homeData.data.property.datePosted <= minTime)
-						|| (input.type === 'sold'
+                    if((input.type !== 'sold' && minTime && homeData.data.property.datePosted < minTime)	//check minDate normally if 'Sold' option is not chosen
+						|| (input.type === 'sold'	//else check for 'Sold' option sub-requirements (and use minDate for dateSold instead
 							&& ((homeData.data.property.homeStatus != 'RECENTLY_SOLD')
 								|| (homeData.data.property.lastSoldPrice < input.minPriceSold)
 								|| (homeData.data.property.lastSoldPrice > input.maxPriceSold)
-								|| (input.zestimateRequired && homeData.data.property.zestimate == null)))){
-						console.log('Ignoring entry...: zpid: ' + homeData.data.property.zpid
+								|| (input.zestimateRequired && homeData.data.property.zestimate == null)
+								|| (minTime && homeData.data.property.dateSold < minTime)))){
+						if(homeData.data.property.homeStatus === 'RECENTLY_SOLD'){		//if house was RECENTLY_SOLD but ignored, print out why
+							console.log('Ignoring entry...: zpid: ' + homeData.data.property.zpid
 							+ ', homeStatus: ' + homeData.data.property.homeStatus
+							+ ', dateSold: ' + homeData.data.property.dateSold
 							+ ', lastSoldPrice: ' + homeData.data.property.lastSoldPrice
 							+ ', minPriceSold: ' + input.minPriceSold
 							+ ', maxPriceSold: ' + input.maxPriceSold
 							+ ', zestimateRequired: ' + input.zestimateRequired
-							+ ', checkinputType: ' + (input.type === 'sold')
-							+ ', checkHomeStatus: ' + !(homeData.data.property.homeStatus != 'RECENTLY_SOLD')
+							+ ', checkDateSold: ' + !(minTime && homeData.data.property.dateSold < minTime)
 							+ ', checkMinPriceSold: ' + !(homeData.data.property.lastSoldPrice < input.minPriceSold)
 							+ ', checkMaxPriceSold: ' + !(homeData.data.property.lastSoldPrice > input.maxPriceSold)
 							+ ', checkZestimate: ' + !(input.zestimateRequired && homeData.data.property.zestimate == null));
-							return;
+						}
+						return;
 					}
                     const result = getSimpleResult(homeData.data.property);
                     if(extendOutputFunction){
