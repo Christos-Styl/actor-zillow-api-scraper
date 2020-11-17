@@ -266,12 +266,14 @@ Apify.main(async () => {
                     const homeData = await page.evaluate(queryZpid, zpid, queryId);
                     if((input.type !== 'sold' && minTime && homeData.data.property.datePosted < minTime)	//check minDate normally if 'Sold' option is not chosen
 						|| (input.type === 'sold'	//else check for 'Sold' option sub-requirements (and use minDate for dateSold instead
-							&& ((homeData.data.property.homeStatus != 'RECENTLY_SOLD')
+							&& (('RECENTLY_SOLD' != homeData.data.property.homeStatus)
+								|| (!homeData.data.property.lastSoldPrice)
 								|| (homeData.data.property.lastSoldPrice < input.minPriceSold)
 								|| (homeData.data.property.lastSoldPrice > input.maxPriceSold)
-								|| (input.zestimateRequired && homeData.data.property.zestimate == null)
+								|| (input.zestimateRequired && !homeData.data.property.zestimate)
+								|| (!homeData.data.property.dateSold)
 								|| (minTime && homeData.data.property.dateSold < minTime)))){
-						if(homeData.data.property.homeStatus === 'RECENTLY_SOLD'){		//if house was RECENTLY_SOLD but ignored, print out why
+						if('RECENTLY_SOLD' === homeData.data.property.homeStatus){		//if house was RECENTLY_SOLD but ignored, print out why
 							console.log('Ignoring entry...: zpid: ' + homeData.data.property.zpid
 							+ ', homeStatus: ' + homeData.data.property.homeStatus
 							+ ', dateSold: ' + homeData.data.property.dateSold
