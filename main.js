@@ -269,7 +269,14 @@ Apify.main(async () => {
 							&& (homeData.data.property.homeStatus != 'RECENTLY_SOLD' 
 								|| homeData.data.property.lastSoldPrice < input.minPriceSold
 								|| homeData.data.property.lastSoldPrice > input.maxPriceSold
-								|| (input.zestimateRequired && !homeData.data.property.zestimate))))
+								|| (input.zestimateRequired && homeData.data.property.zestimate == null)))){
+						console.log('homeStatus: ' + homeData.data.property.homeStatus
+							+ ', lastSoldPrice: ' + homeData.data.property.lastSoldPrice
+							+ ', minPriceSold: ' + input.minPriceSold
+							+ ', maxPriceSold: ' + input.maxPriceSold
+							+ ', zestimateRequired: ' + input.zestimateRequired
+							+ ', zestimate: ' + homeData.data.property.zestimate);
+					}
 							{return;}
                     const result = getSimpleResult(homeData.data.property);
                     if(extendOutputFunction){
