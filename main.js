@@ -270,14 +270,18 @@ Apify.main(async () => {
 								|| homeData.data.property.lastSoldPrice < input.minPriceSold
 								|| homeData.data.property.lastSoldPrice > input.maxPriceSold
 								|| (input.zestimateRequired && homeData.data.property.zestimate == null)))){
-						console.log('homeStatus: ' + homeData.data.property.homeStatus
+						console.log('Ignoring entry...: zpid: ' + homeData.data.property.zpid
+							+ ', homeStatus: ' + homeData.data.property.homeStatus
 							+ ', lastSoldPrice: ' + homeData.data.property.lastSoldPrice
 							+ ', minPriceSold: ' + input.minPriceSold
 							+ ', maxPriceSold: ' + input.maxPriceSold
 							+ ', zestimateRequired: ' + input.zestimateRequired
-							+ ', zestimate: ' + homeData.data.property.zestimate);
+							+ ', checkHomeStatus: ' + (homeData.data.property.homeStatus != 'RECENTLY_SOLD')
+							+ ', checkMinPriceSold: ' + (homeData.data.property.lastSoldPrice < input.minPriceSold)
+							+ ', checkMaxPriceSold: ' + (homeData.data.property.lastSoldPrice > input.maxPriceSold)
+							+ ', checkZestimate: ' + (input.zestimateRequired && homeData.data.property.zestimate == null));
+							return;
 					}
-							{return;}
                     const result = getSimpleResult(homeData.data.property);
                     if(extendOutputFunction){
                         try{Object.assign(result, await extendOutputFunction(homeData.data));}
