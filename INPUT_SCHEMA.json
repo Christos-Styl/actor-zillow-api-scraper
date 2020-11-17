@@ -7,7 +7,6 @@
             "title": "Search",
             "type": "string",
             "editor": "textfield",
-            "prefill": "Los Angeles",
             "description": "Query to search on Zillow.com"
         },
         "type": {
@@ -34,6 +33,7 @@
             "title": "Start URLs",
             "type": "array",
             "editor": "requestListSources",
+			"prefill": "https://www.zillow.com/brooklyn-new-york-ny/sold/",
             "description": "List of URLs that will be crawled."
         },
         "zpids": {
@@ -61,6 +61,26 @@
             "type": "string",
             "editor": "textfield",
             "description": "Oldest date allowed in results"
+        },
+		"minPriceSold": {
+            "title": "Min price Sold",
+            "type": "integer",
+			"minimum": 0,
+			"prefill": 100000,
+            "description": "Minimum sold price allowed in results ('Sold' search only)"
+        },
+		"maxPriceSold": {
+            "title": "Max price Sold",
+            "type": "integer",
+			"minimum": 0,
+			"prefill": 10000000,
+            "description": "Maximum sold price allowed in results ('Sold' search only)"
+        },
+		"zestimateRequired": {
+            "title": "Zestimate Required",
+            "type": "boolean",
+            "description": "When true only returns entries that have a zestimate ('Sold' search only).",
+			"default": true
         },
         "simple": {
             "title": "Simple results",
