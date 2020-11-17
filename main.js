@@ -105,7 +105,7 @@ const queryRegionHomes = async (queryState, type) => {
         queryState.filterState = {"isForSaleByAgent":{"value":false},"isForSaleByOwner":{"value":true},"isNewConstruction":{"value":false},"isForSaleForeclosure":{"value":false},"isComingSoon":{"value":false},"isAuction":{"value":false},"isPreMarketForeclosure":{"value":false},"isPreMarketPreForeclosure":{"value":false},"isForRent":{"value":false}};
     }
 	else if(type === 'sold'){
-        queryState.filterState = {"isComingSoon":{"value":false},"isAuction":{"value":false},"isForRent":{"value":false}};
+        queryState.filterState = {"isForSaleByAgent":{"value":true},"isForSaleByOwner":{"value":true},"isComingSoon":{"value":false},"isAuction":{"value":false},"isForRent":{"value":false}};
     }
     else if(type === 'all'){
         queryState.filterState = {"isPreMarketForeclosure":{"value":true},"isForSaleForeclosure":{"value":true},"sortSelection":{"value":"globalrelevanceex"},"isAuction":{"value":true},"isNewConstruction":{"value":true},"isRecentlySold":{"value":true},"isForSaleByOwner":{"value":true},"isComingSoon":{"value":true},"isPreMarketPreForeclosure":{"value":true},"isForSaleByAgent":{"value":true}};
