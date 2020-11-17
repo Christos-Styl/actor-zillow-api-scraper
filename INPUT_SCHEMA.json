@@ -19,12 +19,14 @@
                 "sale",
                 "fsbo",
                 "rent",
+				"sold",
                 "all"
             ],
             "enumTitles": [
                 "For sale",
                 "For sale by owner",
                 "For rent",
+				"Sold",
                 "All"
             ]
         },
