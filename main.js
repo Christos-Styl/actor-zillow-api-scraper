@@ -274,7 +274,7 @@ Apify.main(async () => {
 								|| (!homeData.data.property.dateSold)
 								|| (minTime && homeData.data.property.dateSold < minTime)))){
 						if('RECENTLY_SOLD' !== homeData.data.property.homeStatus){
-							console.log('Ignoring UNSOLD entry...: zpid: ' + homeData.data.property.zpid;
+							console.log('Ignoring UNSOLD entry...: zpid: ' + homeData.data.property.zpid);
 						}
 						if('RECENTLY_SOLD' === homeData.data.property.homeStatus){		//if house was RECENTLY_SOLD but ignored, print out why
 							console.log('Ignoring entry...: zpid: ' + homeData.data.property.zpid
