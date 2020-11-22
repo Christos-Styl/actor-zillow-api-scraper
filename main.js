@@ -98,19 +98,23 @@ const splitQueryState = queryState => {
 
 // Make API query for all ZPIDs in map reqion
 const queryRegionHomes = async (queryState, type) => {
+	console.log('queryRegionHomes...');
     if(type === 'rent'){
         queryState.filterState = {"isForSaleByAgent":{"value":false},"isForSaleByOwner":{"value":false},"isNewConstruction":{"value":false},"isForSaleForeclosure":{"value":false},"isComingSoon":{"value":false},"isAuction":{"value":false},"isPreMarketForeclosure":{"value":false},"isPreMarketPreForeclosure":{"value":false},"isForRent":{"value":true}};
-    }
+		console.log('"rent" branch in queryRegionHomes. QueryState.filterState: ' + queryState.filterState);
+	}
     else if(type === 'fsbo'){
         queryState.filterState = {"isForSaleByAgent":{"value":false},"isForSaleByOwner":{"value":true},"isNewConstruction":{"value":false},"isForSaleForeclosure":{"value":false},"isComingSoon":{"value":false},"isAuction":{"value":false},"isPreMarketForeclosure":{"value":false},"isPreMarketPreForeclosure":{"value":false},"isForRent":{"value":false}};
-    }
+		console.log('"fsbo" branch in queryRegionHomes. QueryState.filterState: ' + queryState.filterState);
+	}
 	else if(type === 'sold'){
         queryState.filterState = {"isForSaleByAgent":{"value":false},"isForSaleByOwner":{"value":false}, "isRecentlySold":{"value":true},"isComingSoon":{"value":false},"isAuction":{"value":false},"isForRent":{"value":false}};
-		console.log('queryState.filterState: ' + queryState.filterState);
+		console.log('"sold" branch in queryRegionHomes. QueryState.filterState: ' + queryState.filterState);
 	}
     else if(type === 'all'){
         queryState.filterState = {"isPreMarketForeclosure":{"value":true},"isForSaleForeclosure":{"value":true},"sortSelection":{"value":"globalrelevanceex"},"isAuction":{"value":true},"isNewConstruction":{"value":true},"isRecentlySold":{"value":true},"isForSaleByOwner":{"value":true},"isComingSoon":{"value":true},"isPreMarketPreForeclosure":{"value":true},"isForSaleByAgent":{"value":true}};
-    }
+		console.log('"all" branch in queryRegionHomes. QueryState.filterState: ' + queryState.filterState);
+	}
     const qsParam = encodeURIComponent(JSON.stringify(queryState));
     const resp = await fetch('https://www.zillow.com/search/GetSearchPageState.htm?searchQueryState=' + qsParam);
     return await resp.json();
@@ -255,7 +259,7 @@ Apify.main(async () => {
             try{
                 if(!qs){qs = await page.evaluate(getInitialQueryState);}
                 searchState = await page.evaluate(queryRegionHomes, qs, input.type);
-				console.log('searchState: ' + searchState);
+				console.log('searchState: ' + JSON.stringify(searchState));
             }
             catch(e){
                 await puppeteerPool.retire(page.browser());
