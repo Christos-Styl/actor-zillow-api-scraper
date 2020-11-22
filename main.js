@@ -253,7 +253,7 @@ Apify.main(async () => {
             let qs = request.userData.queryState, searchState;
             try{
                 if(!qs){qs = await page.evaluate(getInitialQueryState);}
-				console.log('Input type passed to queryRegionHomes is: ' + input.type);
+				//console.log('Input type passed to queryRegionHomes is: ' + input.type);
                 searchState = await page.evaluate(queryRegionHomes, qs, input.type);
 				//console.log('searchState: ' + JSON.stringify(searchState));
             }
@@ -268,17 +268,17 @@ Apify.main(async () => {
                     const homeData = await page.evaluate(queryZpid, zpid, queryId);
                     if((input.type !== 'sold' && minTime && homeData.data.property.datePosted < minTime)	//check minDate normally if 'Sold' option is not chosen
 						|| (input.type === 'sold'	//else check for 'Sold' option sub-requirements (and use minDate for dateSold instead
-							&& (('RECENTLY_SOLD' != homeData.data.property.homeStatus)
+							&& (('RECENTLY_SOLD' !== homeData.data.property.homeStatus && 'SOLD' !== homeData.data.property.homeStatus)
 								|| (!homeData.data.property.lastSoldPrice)
 								|| (homeData.data.property.lastSoldPrice < input.minPriceSold)
 								|| (homeData.data.property.lastSoldPrice > input.maxPriceSold)
 								|| (input.zestimateRequired && !homeData.data.property.zestimate)
 								|| (!homeData.data.property.dateSold)
 								|| (minTime && homeData.data.property.dateSold < minTime)))){
-						if('RECENTLY_SOLD' !== homeData.data.property.homeStatus){
+						if('RECENTLY_SOLD' !== homeData.data.property.homeStatus && 'SOLD' !== homeData.data.property.homeStatus){
 							console.log('Ignoring entry...: zpid: ' + homeData.data.property.zpid + ' with homeStatus: ' + homeData.data.property.homeStatus);
 						}
-						if('RECENTLY_SOLD' === homeData.data.property.homeStatus){		//if house was RECENTLY_SOLD but ignored, print out why
+						if('RECENTLY_SOLD' === homeData.data.property.homeStatus || 'SOLD' === homeData.data.property.homeStatus){		//if house was RECENTLY_SOLD but ignored, print out why
 							console.log('Ignoring entry...: zpid: ' + homeData.data.property.zpid
 							+ ', homeStatus: ' + homeData.data.property.homeStatus
 							+ ', dateSold: ' + homeData.data.property.dateSold
@@ -351,7 +351,7 @@ Apify.main(async () => {
                 const states = splitQueryState(qs);
                 for(const state of states){
 					//console.log('Splitting homes... State is: ' + JSON.stringify(state) + ' and startUrl for this state is: ' + startUrl + '...');
-					console.log('Splitting homes... startUrl for this state is: ' + startUrl + '...');
+					//console.log('Splitting homes... startUrl for this state is: ' + startUrl + '...');
                     await requestQueue.addRequest({
                         url: startUrl || 'https://www.zillow.com/new-york-ny/sold/2_p/?searchQueryState=%7B%22pagination%22%3A%7B%22currentPage%22%3A2%7D%2C%22mapBounds%22%3A%7B%22west%22%3A-73.99237605566407%2C%22east%22%3A-73.89195415014649%2C%22south%22%3A40.72379375489432%2C%22north%22%3A40.77841159631918%7D%2C%22mapZoom%22%3A14%2C%22regionSelection%22%3A%5B%7B%22regionId%22%3A6181%2C%22regionType%22%3A6%7D%5D%2C%22isMapVisible%22%3Atrue%2C%22filterState%22%3A%7B%22pmf%22%3A%7B%22value%22%3Afalse%7D%2C%22fore%22%3A%7B%22value%22%3Afalse%7D%2C%22ah%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22auc%22%3A%7B%22value%22%3Afalse%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22rs%22%3A%7B%22value%22%3Atrue%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22pf%22%3A%7B%22value%22%3Afalse%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D',
                         userData: {
