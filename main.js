@@ -98,22 +98,17 @@ const splitQueryState = queryState => {
 
 // Make API query for all ZPIDs in map reqion
 const queryRegionHomes = async (queryState, type) => {
-	console.log('queryRegionHomes...');
     if(type === 'rent'){
         queryState.filterState = {"isForSaleByAgent":{"value":false},"isForSaleByOwner":{"value":false},"isNewConstruction":{"value":false},"isForSaleForeclosure":{"value":false},"isComingSoon":{"value":false},"isAuction":{"value":false},"isPreMarketForeclosure":{"value":false},"isPreMarketPreForeclosure":{"value":false},"isForRent":{"value":true}};
-		console.log('"rent" branch in queryRegionHomes. QueryState.filterState: ' + queryState.filterState);
 	}
     else if(type === 'fsbo'){
         queryState.filterState = {"isForSaleByAgent":{"value":false},"isForSaleByOwner":{"value":true},"isNewConstruction":{"value":false},"isForSaleForeclosure":{"value":false},"isComingSoon":{"value":false},"isAuction":{"value":false},"isPreMarketForeclosure":{"value":false},"isPreMarketPreForeclosure":{"value":false},"isForRent":{"value":false}};
-		console.log('"fsbo" branch in queryRegionHomes. QueryState.filterState: ' + queryState.filterState);
 	}
 	else if(type === 'sold'){
         queryState.filterState = {"isForSaleByAgent":{"value":false},"isForSaleByOwner":{"value":false}, "isRecentlySold":{"value":true},"isComingSoon":{"value":false},"isAuction":{"value":false},"isForRent":{"value":false}};
-		console.log('"sold" branch in queryRegionHomes. QueryState.filterState: ' + queryState.filterState);
 	}
     else if(type === 'all'){
         queryState.filterState = {"isPreMarketForeclosure":{"value":true},"isForSaleForeclosure":{"value":true},"sortSelection":{"value":"globalrelevanceex"},"isAuction":{"value":true},"isNewConstruction":{"value":true},"isRecentlySold":{"value":true},"isForSaleByOwner":{"value":true},"isComingSoon":{"value":true},"isPreMarketPreForeclosure":{"value":true},"isForSaleByAgent":{"value":true}};
-		console.log('"all" branch in queryRegionHomes. QueryState.filterState: ' + queryState.filterState);
 	}
     const qsParam = encodeURIComponent(JSON.stringify(queryState));
     const resp = await fetch('https://www.zillow.com/search/GetSearchPageState.htm?searchQueryState=' + qsParam);
@@ -258,6 +253,7 @@ Apify.main(async () => {
             let qs = request.userData.queryState, searchState;
             try{
                 if(!qs){qs = await page.evaluate(getInitialQueryState);}
+				console.log('Input type passed to queryRegionHomes is: ' + input.type);
                 searchState = await page.evaluate(queryRegionHomes, qs, input.type);
 				console.log('searchState: ' + JSON.stringify(searchState));
             }
@@ -354,7 +350,8 @@ Apify.main(async () => {
                 console.log('Found more than ' + thr + ' homes, splitting map...');
                 const states = splitQueryState(qs);
                 for(const state of states){
-					console.log('Splitting homes... State is: ' + JSON.stringify(state) + ' and startUrl for this state is: ' + startUrl + '...');
+					//console.log('Splitting homes... State is: ' + JSON.stringify(state) + ' and startUrl for this state is: ' + startUrl + '...');
+					console.log('Splitting homes... startUrl for this state is: ' + startUrl + '...');
                     await requestQueue.addRequest({
                         url: startUrl || 'https://www.zillow.com/new-york-ny/sold/2_p/?searchQueryState=%7B%22pagination%22%3A%7B%22currentPage%22%3A2%7D%2C%22mapBounds%22%3A%7B%22west%22%3A-73.99237605566407%2C%22east%22%3A-73.89195415014649%2C%22south%22%3A40.72379375489432%2C%22north%22%3A40.77841159631918%7D%2C%22mapZoom%22%3A14%2C%22regionSelection%22%3A%5B%7B%22regionId%22%3A6181%2C%22regionType%22%3A6%7D%5D%2C%22isMapVisible%22%3Atrue%2C%22filterState%22%3A%7B%22pmf%22%3A%7B%22value%22%3Afalse%7D%2C%22fore%22%3A%7B%22value%22%3Afalse%7D%2C%22ah%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22auc%22%3A%7B%22value%22%3Afalse%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22rs%22%3A%7B%22value%22%3Atrue%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22pf%22%3A%7B%22value%22%3Afalse%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D',
                         userData: {
