@@ -255,7 +255,7 @@ Apify.main(async () => {
                 if(!qs){qs = await page.evaluate(getInitialQueryState);}
 				console.log('Input type passed to queryRegionHomes is: ' + input.type);
                 searchState = await page.evaluate(queryRegionHomes, qs, input.type);
-				console.log('searchState: ' + JSON.stringify(searchState));
+				//console.log('searchState: ' + JSON.stringify(searchState));
             }
             catch(e){
                 await puppeteerPool.retire(page.browser());
