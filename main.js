@@ -305,7 +305,8 @@ Apify.main(async () => {
                     }
                 }
                 catch(e){
-                    console.log('Data extraction failed - zpid: ' + zpid);
+                    console.log('Data extraction failed - zpid: ' + zpid + ' with exception:');
+		    console.log("%O", e)
                     await puppeteerPool.retire(page.browser());
                     await requestQueue.addRequest({
                         url: request.url,
